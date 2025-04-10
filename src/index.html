@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quick Response Coordination System (QRCS)</title>
+    <link href="./output.css" rel="stylesheet">
+    <!-- Add Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Add Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="./js/notifications.js" defer></script>
+</head>
+<body class="bg-black min-h-screen">
+    <!-- Navigation Bar -->
+    <nav class="bg-gray-900 shadow-lg border-b border-gray-800 fixed w-full top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center">
+                    <i class="fas fa-heartbeat text-red-500 text-2xl mr-2"></i>
+                    <span class="text-xl font-semibold text-white">QRCS</span>
+                </div>
+                <div class="hidden md:flex items-center space-x-4">
+                    <a href="#" class="text-gray-300 hover:text-red-500 px-3 py-2 rounded-md transition-colors duration-300" data-page="home">Home</a>
+                    <a href="#" onclick="return checkAuthAndNavigate('dashboard.html')" class="text-gray-300 hover:text-red-500 px-3 py-2 rounded-md transition-colors duration-300">Dashboard</a>
+                    <a href="#" onclick="return checkAuthAndNavigate('resources.html')" class="text-gray-300 hover:text-red-500 px-3 py-2 rounded-md transition-colors duration-300">Resources</a>
+                    <div class="relative" id="notificationContainer">
+                        <button onclick="window.location.href='notifications.html'" class="text-gray-300 hover:text-red-500 px-3 py-2 rounded-md">
+                            <i class="fas fa-bell"></i>
+                            <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center" id="notificationCount">0</span>
+                        </button>
+                    </div>
+                    <button id="loginBtn" onclick="window.location.href='login.html'" class="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700 transition-colors duration-300">Login</button>
+                </div>
+                <!-- Mobile menu button -->
+                <div class="md:hidden">
+                    <button id="mobileMenuBtn" class="text-gray-300 hover:text-white">
+                        <i class="fas fa-bars text-xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <!-- Mobile menu -->
+        <div id="mobileMenu" class="hidden md:hidden bg-gray-900 border-t border-gray-800">
+            <div class="px-2 pt-2 pb-3 space-y-1">
+                <a href="#" class="text-gray-300 hover:text-red-500 block px-3 py-2 rounded-md" data-page="home">Home</a>
+                <a href="#" onclick="return checkAuthAndNavigate('dashboard.html')" class="text-gray-300 hover:text-red-500 block px-3 py-2 rounded-md">Dashboard</a>
+                <a href="#" onclick="return checkAuthAndNavigate('resources.html')" class="text-gray-300 hover:text-red-500 block px-3 py-2 rounded-md">Resources</a>
+                <a href="notifications.html" class="text-gray-300 hover:text-red-500 block px-3 py-2 rounded-md" data-page="notifications">Notifications</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content Area -->
+    <main class="pt-16">
+        <!-- Home Page Content -->
+        <div id="homePage" class="page-content">
+            <!-- Hero Section -->
+            <div class="bg-gray-900">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+                    <div class="text-center">
+                        <h1 class="text-4xl font-bold text-white mb-4">
+                            Emergency Response Made Simple
+                        </h1>
+                        <p class="text-xl text-gray-300 mb-8">
+                            Coordinate emergency responses quickly and efficiently
+                        </p>
+                        <button id="reportIncidentBtn" onclick="window.location.href='report-emergency.html'" class="bg-red-600 text-white px-6 py-3 rounded-lg hover:bg-red-700 transition-colors">
+                            <i class="fas fa-exclamation-circle mr-2"></i>
+                            Report Emergency
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Incident Map -->
+            <div class="bg-gray-900 py-8">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <h2 class="text-2xl font-bold text-white mb-4">Live Incident Map</h2>
+                    <div id="incidentMap" class="h-96 rounded-lg shadow-lg"></div>
+                </div>
+            </div>
+
+            <!-- Features Section -->
+            <div class="bg-black py-16">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                        <!-- Feature cards remain the same -->
+                        <div class="bg-gray-900 p-6 rounded-lg shadow-lg border border-gray-800">
+                            <i class="fas fa-clock text-red-500 text-3xl mb-4"></i>
+                            <h3 class="text-xl font-semibold mb-2 text-white">Quick Response</h3>
+                            <p class="text-gray-300">Immediate coordination with emergency services</p>
+                        </div>
+                        <div class="bg-gray-900 p-6 rounded-lg shadow-lg border border-gray-800">
+                            <i class="fas fa-map-marker-alt text-red-500 text-3xl mb-4"></i>
+                            <h3 class="text-xl font-semibold mb-2 text-white">Location Tracking</h3>
+                            <p class="text-gray-300">Real-time location monitoring and updates</p>
+                        </div>
+                        <div class="bg-gray-900 p-6 rounded-lg shadow-lg border border-gray-800">
+                            <i class="fas fa-users text-red-500 text-3xl mb-4"></i>
+                            <h3 class="text-xl font-semibold mb-2 text-white">Team Coordination</h3>
+                            <p class="text-gray-300">Efficient team management and communication</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Other page contents will be added here -->
+        <div id="dashboardPage" class="page-content hidden">
+            <!-- Dashboard content will be added -->
+        </div>
+        <div id="incidentsPage" class="page-content hidden">
+            <!-- Incident reporting content will be added -->
+        </div>
+        <div id="resourcesPage" class="page-content hidden">
+            <!-- Resource management content will be added -->
+        </div>
+        <div id="communicationsPage" class="page-content hidden">
+            <!-- Communications content will be added -->
+        </div>
+        <div id="notificationsPage" class="page-content hidden">
+            <!-- Notifications content will be added -->
+        </div>
+        <div id="loginPage" class="page-content hidden">
+            <div class="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+                <div class="max-w-md w-full space-y-8 bg-gray-900 p-8 rounded-lg shadow-lg border border-gray-800">
+                    <!-- Login Form -->
+                    <div id="loginForm" class="space-y-6">
+                        <div class="text-center">
+                            <h2 class="text-3xl font-bold text-white">Sign In</h2>
+                            <p class="mt-2 text-gray-400">Welcome back to QRCS</p>
+                        </div>
+                        <form class="mt-8 space-y-6" id="loginFormElement">
+                            <div class="space-y-4">
+                                <div>
+                                    <label for="loginEmail" class="sr-only">Email address</label>
+                                    <input id="loginEmail" name="email" type="email" required 
+                                        class="appearance-none rounded-lg relative block w-full px-3 py-2 border border-gray-700 bg-gray-800 text-gray-300 placeholder-gray-500 focus:outline-none focus:ring-red-500 focus:border-red-500 focus:z-10 sm:text-sm" 
+                                        placeholder="Email address">
+                                </div>
+                                <div>
+                                    <label for="loginPassword" class="sr-only">Password</label>
+                                    <input id="loginPassword" name="password" type="password" required 
+                                        class="appearance-none rounded-lg relative block w-full px-3 py-2 border border-gray-700 bg-gray-800 text-gray-300 placeholder-gray-500 focus:outline-none focus:ring-red-500 focus:border-red-500 focus:z-10 sm:text-sm" 
+                                        placeholder="Password">
+                                </div>
+                            </div>
+
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center">
+                                    <input id="remember-me" name="remember-me" type="checkbox" 
+                                        class="h-4 w-4 text-red-600 focus:ring-red-500 border-gray-700 bg-gray-800 rounded">
+                                    <label for="remember-me" class="ml-2 block text-sm text-gray-300">
+                                        Remember me
+                                    </label>
+                                </div>
+
+                                <div class="text-sm">
+                                    <a href="#" class="font-medium text-red-500 hover:text-red-400">
+                                        Forgot password?
+                                    </a>
+                                </div>
+                            </div>
+
+                            <div>
+                                <button type="submit" 
+                                    class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
+                                    Sign in
+                                </button>
+                            </div>
+                        </form>
+                        <div class="text-center">
+                            <p class="text-gray-400">
+                                Don't have an account? 
+                                <button id="showSignupBtn" class="text-red-500 hover:text-red-400 font-medium">Sign up</button>
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Signup Form -->
+                    <div id="signupForm" class="space-y-6 hidden">
+                        <div class="text-center">
+                            <h2 class="text-3xl font-bold text-white">Create Account</h2>
+                            <p class="mt-2 text-gray-400">Join QRCS today</p>
+                        </div>
+                        <form class="mt-8 space-y-6" id="signupFormElement">
+                            <div class="space-y-4">
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <label for="firstName" class="sr-only">First Name</label>
+                                        <input id="firstName" name="firstName" type="text" required 
+                                            class="appearance-none rounded-lg relative block w-full px-3 py-2 border border-gray-700 bg-gray-800 text-gray-300 placeholder-gray-500 focus:outline-none focus:ring-red-500 focus:border-red-500 focus:z-10 sm:text-sm" 
+                                            placeholder="First Name">
+                                    </div>
+                                    <div>
+                                        <label for="lastName" class="sr-only">Last Name</label>
+                                        <input id="lastName" name="lastName" type="text" required 
+                                            class="appearance-none rounded-lg relative block w-full px-3 py-2 border border-gray-700 bg-gray-800 text-gray-300 placeholder-gray-500 focus:outline-none focus:ring-red-500 focus:border-red-500 focus:z-10 sm:text-sm" 
+                                            placeholder="Last Name">
+                                    </div>
+                                </div>
+                                <div>
+                                    <label for="signupEmail" class="sr-only">Email address</label>
+                                    <input id="signupEmail" name="email" type="email" required 
+                                        class="appearance-none rounded-lg relative block w-full px-3 py-2 border border-gray-700 bg-gray-800 text-gray-300 placeholder-gray-500 focus:outline-none focus:ring-red-500 focus:border-red-500 focus:z-10 sm:text-sm" 
+                                        placeholder="Email address">
+                                </div>
+                                <div>
+                                    <label for="signupPassword" class="sr-only">Password</label>
+                                    <input id="signupPassword" name="password" type="password" required 
+                                        class="appearance-none rounded-lg relative block w-full px-3 py-2 border border-gray-700 bg-gray-800 text-gray-300 placeholder-gray-500 focus:outline-none focus:ring-red-500 focus:border-red-500 focus:z-10 sm:text-sm" 
+                                        placeholder="Password">
+                                </div>
+                                <div>
+                                    <label for="confirmPassword" class="sr-only">Confirm Password</label>
+                                    <input id="confirmPassword" name="confirmPassword" type="password" required 
+                                        class="appearance-none rounded-lg relative block w-full px-3 py-2 border border-gray-700 bg-gray-800 text-gray-300 placeholder-gray-500 focus:outline-none focus:ring-red-500 focus:border-red-500 focus:z-10 sm:text-sm" 
+                                        placeholder="Confirm Password">
+                                </div>
+                            </div>
+
+                            <div>
+                                <button type="submit" 
+                                    class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
+                                    Create Account
+                                </button>
+                            </div>
+                        </form>
+                        <div class="text-center">
+                            <p class="text-gray-400">
+                                Already have an account? 
+                                <button id="showLoginBtn" class="text-red-500 hover:text-red-400 font-medium">Sign in</button>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div class="text-center text-gray-400">
+                <p>&copy; 2024 Quick Response Coordination System. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Add Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <!-- Add main JavaScript file -->
+    <script src="./js/main.js"></script>
+</body>
+</html>

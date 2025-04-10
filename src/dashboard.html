@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - QRCS</title>
+    <link href="./output.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+</head>
+<body class="bg-black min-h-screen">
+    <!-- Navigation Bar -->
+    <nav class="bg-gray-900 shadow-lg border-b border-gray-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center">
+                    <a href="index.html" class="flex items-center">
+                        <i class="fas fa-heartbeat text-red-500 text-2xl mr-2"></i>
+                        <span class="text-xl font-semibold text-white">QRCS</span>
+                    </a>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <div class="relative" id="notificationContainer">
+                        <button class="text-gray-300 hover:text-red-500 px-3 py-2 rounded-md">
+                            <i class="fas fa-bell"></i>
+                            <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center" id="notificationCount">0</span>
+                        </button>
+                    </div>
+                    <button id="userMenuBtn" class="text-gray-300 hover:text-red-500">
+                        <i class="fas fa-user-circle text-2xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container mx-auto px-4 py-8">
+        <!-- Dashboard Header -->
+        <div class="mb-8">
+            <h1 class="text-3xl font-bold text-white mb-2">Emergency Response Dashboard</h1>
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <!-- Statistics Cards -->
+                <div class="bg-gray-900 p-4 rounded-lg border border-gray-800">
+                    <div class="flex items-center">
+                        <div class="p-3 rounded-full bg-red-500 bg-opacity-20">
+                            <i class="fas fa-exclamation-circle text-red-500 text-2xl"></i>
+                        </div>
+                        <div class="ml-4">
+                            <p class="text-gray-400 text-sm">Active Emergencies</p>
+                            <h3 class="text-xl font-bold text-white" id="activeEmergencies">0</h3>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-gray-900 p-4 rounded-lg border border-gray-800">
+                    <div class="flex items-center">
+                        <div class="p-3 rounded-full bg-green-500 bg-opacity-20">
+                            <i class="fas fa-check-circle text-green-500 text-2xl"></i>
+                        </div>
+                        <div class="ml-4">
+                            <p class="text-gray-400 text-sm">Resolved Cases</p>
+                            <h3 class="text-xl font-bold text-white" id="resolvedCases">0</h3>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-gray-900 p-4 rounded-lg border border-gray-800">
+                    <div class="flex items-center">
+                        <div class="p-3 rounded-full bg-yellow-500 bg-opacity-20">
+                            <i class="fas fa-clock text-yellow-500 text-2xl"></i>
+                        </div>
+                        <div class="ml-4">
+                            <p class="text-gray-400 text-sm">Pending</p>
+                            <h3 class="text-xl font-bold text-white" id="pendingCases">0</h3>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-gray-900 p-4 rounded-lg border border-gray-800">
+                    <div class="flex items-center">
+                        <div class="p-3 rounded-full bg-blue-500 bg-opacity-20">
+                            <i class="fas fa-ambulance text-blue-500 text-2xl"></i>
+                        </div>
+                        <div class="ml-4">
+                            <p class="text-gray-400 text-sm">Available Units</p>
+                            <h3 class="text-xl font-bold text-white" id="availableUnits">0</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Dashboard Content -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Emergency List -->
+            <div class="lg:col-span-2">
+                <div class="bg-gray-900 rounded-lg border border-gray-800 p-6">
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 class="text-xl font-bold text-white">Recent Emergencies</h2>
+                        <div class="flex space-x-2">
+                            <select id="statusFilter" class="bg-gray-800 text-gray-300 rounded-md border border-gray-700 px-3 py-1">
+                                <option value="all">All Status</option>
+                                <option value="pending">Pending</option>
+                                <option value="active">Active</option>
+                                <option value="resolved">Resolved</option>
+                            </select>
+                            <select id="typeFilter" class="bg-gray-800 text-gray-300 rounded-md border border-gray-700 px-3 py-1">
+                                <option value="all">All Types</option>
+                                <option value="medical">Medical</option>
+                                <option value="fire">Fire</option>
+                                <option value="police">Police</option>
+                                <option value="accident">Accident</option>
+                                <option value="disaster">Disaster</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full">
+                            <thead>
+                                <tr class="text-gray-400 text-left">
+                                    <th class="py-3 px-4">Type</th>
+                                    <th class="py-3 px-4">Location</th>
+                                    <th class="py-3 px-4">Status</th>
+                                    <th class="py-3 px-4">Time</th>
+                                    <th class="py-3 px-4">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="emergencyList" class="text-gray-300">
+                                <!-- Emergency items will be dynamically added here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Map and Quick Actions -->
+            <div class="space-y-8">
+                <!-- Live Map -->
+                <div class="bg-gray-900 rounded-lg border border-gray-800 p-6">
+                    <h2 class="text-xl font-bold text-white mb-4">Live Map</h2>
+                    <div id="dashboardMap" class="h-64 rounded-lg"></div>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="bg-gray-900 rounded-lg border border-gray-800 p-6">
+                    <h2 class="text-xl font-bold text-white mb-4">Quick Actions</h2>
+                    <div class="space-y-2">
+                        <button onclick="window.location.href='report-emergency.html'" class="w-full bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-colors">
+                            <i class="fas fa-plus mr-2"></i>New Emergency
+                        </button>
+                        <button onclick="openDispatchModal()" class="w-full bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
+                            <i class="fas fa-truck mr-2"></i>Dispatch Unit
+                        </button>
+                        <button onclick="generateReport()" class="w-full bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
+                            <i class="fas fa-file-alt mr-2"></i>Generate Report
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="./js/dashboard.js"></script>
+</body>
+</html> 

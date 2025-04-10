@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resources - QRCS</title>
+    <link href="./output.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body class="bg-black min-h-screen">
+    <!-- Navigation Bar -->
+    <nav class="bg-gray-900 shadow-lg border-b border-gray-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center">
+                    <a href="index.html" class="flex items-center">
+                        <i class="fas fa-heartbeat text-red-500 text-2xl mr-2"></i>
+                        <span class="text-xl font-semibold text-white">QRCS</span>
+                    </a>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <div class="relative" id="notificationContainer">
+                        <button class="text-gray-300 hover:text-red-500 px-3 py-2 rounded-md">
+                            <i class="fas fa-bell"></i>
+                            <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center" id="notificationCount">0</span>
+                        </button>
+                    </div>
+                    <button id="userMenuBtn" class="text-gray-300 hover:text-red-500">
+                        <i class="fas fa-user-circle text-2xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container mx-auto px-4 py-8">
+        <div class="mb-8">
+            <h1 class="text-3xl font-bold text-white mb-4">Resource Management</h1>
+            
+            <!-- Resource Statistics -->
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+                <div class="bg-gray-900 p-4 rounded-lg border border-gray-800">
+                    <div class="flex items-center">
+                        <div class="p-3 rounded-full bg-green-500 bg-opacity-20">
+                            <i class="fas fa-ambulance text-green-500 text-2xl"></i>
+                        </div>
+                        <div class="ml-4">
+                            <p class="text-gray-400 text-sm">Available Resources</p>
+                            <h3 class="text-xl font-bold text-white" id="availableCount">0</h3>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-gray-900 p-4 rounded-lg border border-gray-800">
+                    <div class="flex items-center">
+                        <div class="p-3 rounded-full bg-blue-500 bg-opacity-20">
+                            <i class="fas fa-truck text-blue-500 text-2xl"></i>
+                        </div>
+                        <div class="ml-4">
+                            <p class="text-gray-400 text-sm">Assigned</p>
+                            <h3 class="text-xl font-bold text-white" id="assignedCount">0</h3>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-gray-900 p-4 rounded-lg border border-gray-800">
+                    <div class="flex items-center">
+                        <div class="p-3 rounded-full bg-red-500 bg-opacity-20">
+                            <i class="fas fa-tools text-red-500 text-2xl"></i>
+                        </div>
+                        <div class="ml-4">
+                            <p class="text-gray-400 text-sm">In Maintenance</p>
+                            <h3 class="text-xl font-bold text-white" id="maintenanceCount">0</h3>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-gray-900 p-4 rounded-lg border border-gray-800">
+                    <div class="flex items-center">
+                        <div class="p-3 rounded-full bg-yellow-500 bg-opacity-20">
+                            <i class="fas fa-exclamation-triangle text-yellow-500 text-2xl"></i>
+                        </div>
+                        <div class="ml-4">
+                            <p class="text-gray-400 text-sm">Critical Level</p>
+                            <h3 class="text-xl font-bold text-white" id="criticalCount">0</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Resource Management Section -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <!-- Resource List -->
+                <div class="lg:col-span-2">
+                    <div class="bg-gray-900 rounded-lg border border-gray-800 p-6">
+                        <div class="flex justify-between items-center mb-6">
+                            <h2 class="text-xl font-bold text-white">Resources</h2>
+                            <div class="flex space-x-2">
+                                <select id="resourceTypeFilter" class="bg-gray-800 text-gray-300 rounded-md border border-gray-700 px-3 py-1">
+                                    <option value="all">All Types</option>
+                                    <option value="ambulance">Ambulances</option>
+                                    <option value="firetruck">Fire Trucks</option>
+                                    <option value="police">Police Units</option>
+                                    <option value="medical">Medical Teams</option>
+                                </select>
+                                <select id="statusFilter" class="bg-gray-800 text-gray-300 rounded-md border border-gray-700 px-3 py-1">
+                                    <option value="all">All Status</option>
+                                    <option value="available">Available</option>
+                                    <option value="assigned">Assigned</option>
+                                    <option value="maintenance">Maintenance</option>
+                                </select>
+                                <button onclick="openAddResourceModal()" class="bg-green-600 text-white px-4 py-1 rounded-md hover:bg-green-700">
+                                    <i class="fas fa-plus mr-2"></i>Add
+                                </button>
+                            </div>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full">
+                                <thead>
+                                    <tr class="text-gray-400 text-left">
+                                        <th class="py-3 px-4">Type</th>
+                                        <th class="py-3 px-4">ID</th>
+                                        <th class="py-3 px-4">Status</th>
+                                        <th class="py-3 px-4">Location</th>
+                                        <th class="py-3 px-4">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="resourceList" class="text-gray-300">
+                                    <!-- Resources will be dynamically added here -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Active Incidents and Assignment -->
+                <div class="space-y-8">
+                    <div class="bg-gray-900 rounded-lg border border-gray-800 p-6">
+                        <h2 class="text-xl font-bold text-white mb-4">Active Incidents</h2>
+                        <div class="space-y-4" id="activeIncidentsList">
+                            <!-- Active incidents will be dynamically added here -->
+                        </div>
+                    </div>
+
+                    <div class="bg-gray-900 rounded-lg border border-gray-800 p-6">
+                        <h2 class="text-xl font-bold text-white mb-4">Quick Actions</h2>
+                        <div class="space-y-2">
+                            <button onclick="startMaintenance()" class="w-full bg-yellow-600 text-white px-4 py-2 rounded-lg hover:bg-yellow-700 transition-colors">
+                                <i class="fas fa-tools mr-2"></i>Schedule Maintenance
+                            </button>
+                            <button onclick="generateResourceReport()" class="w-full bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
+                                <i class="fas fa-file-alt mr-2"></i>Generate Report
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Resource Modal -->
+    <div id="addResourceModal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center">
+        <div class="bg-gray-900 rounded-lg p-8 max-w-md w-full mx-4">
+            <h2 class="text-xl font-bold text-white mb-4">Add New Resource</h2>
+            <form id="addResourceForm" class="space-y-4">
+                <div>
+                    <label class="block text-gray-300 mb-2">Resource Type</label>
+                    <select name="type" required class="w-full bg-gray-800 text-gray-300 rounded-md border border-gray-700 px-3 py-2">
+                        <option value="ambulance">Ambulance</option>
+                        <option value="firetruck">Fire Truck</option>
+                        <option value="police">Police Unit</option>
+                        <option value="medical">Medical Team</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-gray-300 mb-2">Resource ID</label>
+                    <input type="text" name="id" required class="w-full bg-gray-800 text-gray-300 rounded-md border border-gray-700 px-3 py-2">
+                </div>
+                <div>
+                    <label class="block text-gray-300 mb-2">Initial Location</label>
+                    <input type="text" name="location" required class="w-full bg-gray-800 text-gray-300 rounded-md border border-gray-700 px-3 py-2">
+                </div>
+                <div class="flex justify-end space-x-4 mt-6">
+                    <button type="button" onclick="closeAddResourceModal()" class="px-4 py-2 text-gray-300 hover:text-white">
+                        Cancel
+                    </button>
+                    <button type="submit" class="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700">
+                        Add Resource
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="./js/resources.js"></script>
+</body>
+</html> 

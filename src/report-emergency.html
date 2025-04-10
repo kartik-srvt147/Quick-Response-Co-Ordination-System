@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Report Emergency - QRCS</title>
+    <link href="./output.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+</head>
+<body class="bg-black min-h-screen">
+    <!-- Navigation Bar -->
+    <nav class="bg-gray-900 shadow-lg border-b border-gray-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center">
+                    <a href="index.html" class="flex items-center">
+                        <i class="fas fa-heartbeat text-red-500 text-2xl mr-2"></i>
+                        <span class="text-xl font-semibold text-white">QRCS</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="py-8">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="bg-gray-900 rounded-lg shadow-lg p-6 space-y-8">
+                <div class="text-center">
+                    <h1 class="text-3xl font-bold text-white">Report Emergency</h1>
+                    <p class="mt-2 text-gray-400">Please provide as much detail as possible</p>
+                </div>
+
+                <form id="emergencyForm" class="space-y-6">
+                    <!-- Emergency Type -->
+                    <div class="space-y-2">
+                        <label class="text-white font-medium">Emergency Type</label>
+                        <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+                            <button type="button" class="emergency-type-btn bg-gray-800 hover:bg-red-600 text-white p-4 rounded-lg flex flex-col items-center transition-colors" data-type="medical">
+                                <i class="fas fa-ambulance text-2xl mb-2"></i>
+                                Medical
+                            </button>
+                            <button type="button" class="emergency-type-btn bg-gray-800 hover:bg-red-600 text-white p-4 rounded-lg flex flex-col items-center transition-colors" data-type="fire">
+                                <i class="fas fa-fire text-2xl mb-2"></i>
+                                Fire
+                            </button>
+                            <button type="button" class="emergency-type-btn bg-gray-800 hover:bg-red-600 text-white p-4 rounded-lg flex flex-col items-center transition-colors" data-type="police">
+                                <i class="fas fa-shield-alt text-2xl mb-2"></i>
+                                Police
+                            </button>
+                            <button type="button" class="emergency-type-btn bg-gray-800 hover:bg-red-600 text-white p-4 rounded-lg flex flex-col items-center transition-colors" data-type="accident">
+                                <i class="fas fa-car-crash text-2xl mb-2"></i>
+                                Accident
+                            </button>
+                            <button type="button" class="emergency-type-btn bg-gray-800 hover:bg-red-600 text-white p-4 rounded-lg flex flex-col items-center transition-colors" data-type="disaster">
+                                <i class="fas fa-house-damage text-2xl mb-2"></i>
+                                Disaster
+                            </button>
+                            <button type="button" class="emergency-type-btn bg-gray-800 hover:bg-red-600 text-white p-4 rounded-lg flex flex-col items-center transition-colors" data-type="other">
+                                <i class="fas fa-exclamation-triangle text-2xl mb-2"></i>
+                                Other
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Severity Level -->
+                    <div class="space-y-2">
+                        <label class="text-white font-medium">Severity Level</label>
+                        <div class="flex space-x-4">
+                            <label class="flex-1">
+                                <input type="radio" name="severity" value="low" class="hidden" required>
+                                <div class="text-center p-3 rounded-lg bg-green-800 hover:bg-green-700 cursor-pointer text-white">
+                                    Low
+                                </div>
+                            </label>
+                            <label class="flex-1">
+                                <input type="radio" name="severity" value="medium" class="hidden">
+                                <div class="text-center p-3 rounded-lg bg-yellow-600 hover:bg-yellow-500 cursor-pointer text-white">
+                                    Medium
+                                </div>
+                            </label>
+                            <label class="flex-1">
+                                <input type="radio" name="severity" value="high" class="hidden">
+                                <div class="text-center p-3 rounded-lg bg-red-600 hover:bg-red-500 cursor-pointer text-white">
+                                    High
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Location -->
+                    <div class="space-y-2">
+                        <label class="text-white font-medium">Location</label>
+                        <div class="space-y-4">
+                            <div id="locationMap" class="h-64 rounded-lg"></div>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <input type="text" id="address" name="address" placeholder="Street Address" 
+                                    class="w-full px-4 py-2 rounded-lg bg-gray-800 border border-gray-700 text-white placeholder-gray-500 focus:outline-none focus:border-red-500">
+                                <input type="text" id="landmark" name="landmark" placeholder="Nearest Landmark" 
+                                    class="w-full px-4 py-2 rounded-lg bg-gray-800 border border-gray-700 text-white placeholder-gray-500 focus:outline-none focus:border-red-500">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Number of People Affected -->
+                    <div class="space-y-2">
+                        <label for="peopleAffected" class="text-white font-medium">Number of People Affected</label>
+                        <input type="number" id="peopleAffected" name="peopleAffected" min="1" 
+                            class="w-full px-4 py-2 rounded-lg bg-gray-800 border border-gray-700 text-white placeholder-gray-500 focus:outline-none focus:border-red-500">
+                    </div>
+
+                    <!-- Description -->
+                    <div class="space-y-2">
+                        <label for="description" class="text-white font-medium">Emergency Description</label>
+                        <textarea id="description" name="description" rows="4" required
+                            class="w-full px-4 py-2 rounded-lg bg-gray-800 border border-gray-700 text-white placeholder-gray-500 focus:outline-none focus:border-red-500"
+                            placeholder="Please describe the emergency situation in detail..."></textarea>
+                    </div>
+
+                    <!-- Contact Information -->
+                    <div class="space-y-4">
+                        <h3 class="text-white font-medium">Contact Information</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <input type="text" id="contactName" name="contactName" placeholder="Your Name" required
+                                class="w-full px-4 py-2 rounded-lg bg-gray-800 border border-gray-700 text-white placeholder-gray-500 focus:outline-none focus:border-red-500">
+                            <input type="tel" id="contactPhone" name="contactPhone" placeholder="Phone Number" required
+                                class="w-full px-4 py-2 rounded-lg bg-gray-800 border border-gray-700 text-white placeholder-gray-500 focus:outline-none focus:border-red-500">
+                        </div>
+                    </div>
+
+                    <!-- Additional Resources Needed -->
+                    <div class="space-y-2">
+                        <label class="text-white font-medium">Additional Resources Needed</label>
+                        <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+                            <label class="flex items-center space-x-2">
+                                <input type="checkbox" name="resources" value="ambulance" 
+                                    class="form-checkbox h-4 w-4 text-red-600 bg-gray-800 border-gray-700 rounded">
+                                <span class="text-gray-300">Ambulance</span>
+                            </label>
+                            <label class="flex items-center space-x-2">
+                                <input type="checkbox" name="resources" value="firetruck" 
+                                    class="form-checkbox h-4 w-4 text-red-600 bg-gray-800 border-gray-700 rounded">
+                                <span class="text-gray-300">Fire Truck</span>
+                            </label>
+                            <label class="flex items-center space-x-2">
+                                <input type="checkbox" name="resources" value="police" 
+                                    class="form-checkbox h-4 w-4 text-red-600 bg-gray-800 border-gray-700 rounded">
+                                <span class="text-gray-300">Police Unit</span>
+                            </label>
+                            <label class="flex items-center space-x-2">
+                                <input type="checkbox" name="resources" value="medicalTeam" 
+                                    class="form-checkbox h-4 w-4 text-red-600 bg-gray-800 border-gray-700 rounded">
+                                <span class="text-gray-300">Medical Team</span>
+                            </label>
+                            <label class="flex items-center space-x-2">
+                                <input type="checkbox" name="resources" value="rescueTeam" 
+                                    class="form-checkbox h-4 w-4 text-red-600 bg-gray-800 border-gray-700 rounded">
+                                <span class="text-gray-300">Rescue Team</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <div class="flex justify-center pt-4">
+                        <button type="submit" 
+                            class="bg-red-600 text-white px-8 py-3 rounded-lg hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 focus:ring-offset-gray-900 transition-colors">
+                            <i class="fas fa-exclamation-circle mr-2"></i>
+                            Submit Emergency Report
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="./js/emergency-report.js"></script>
+</body>
+</html> 
